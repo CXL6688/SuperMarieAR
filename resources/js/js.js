@@ -455,7 +455,6 @@ var Game = {
 		this.createMario();
 		this.createAllEnemy();
 		document.onkeydown = function(ev){
-		
 			var ev = ev || window.event;
 			if(ev.keyCode == 72){
 				document.onkeydown = null;
@@ -464,10 +463,9 @@ var Game = {
 				This.showNotice();
 				This.initWebSocket();
 				setInterval(function(){
-					    console.log(This.ws);
-              This.ws.send("action");
-        },800);
-			}	
+              		This.ws.send("action");
+              	},800);
+			}
 			return false;
 		}
 
@@ -498,8 +496,19 @@ var Game = {
                   	setTimeout(function(){
                   			This.fireKeyEvent("keyup", 68);	
                   	}, 600)
-		            		
-                  }
+                  }else if(received_msg=="jump"){
+					  console.log("开始跳")
+					  This.fireKeyEvent("keydown", 75);
+					  setTimeout(function(){
+						  This.fireKeyEvent("keyup", 75);
+					  }, 600)
+				  }else if(received_msg=="back"){
+					  console.log("开始跳")
+					  This.fireKeyEvent("keydown", 65);
+					  setTimeout(function(){
+						  This.fireKeyEvent("keyup", 65);
+					  }, 600)
+				  }
                };
                
                // 连接关闭后的回调函数
