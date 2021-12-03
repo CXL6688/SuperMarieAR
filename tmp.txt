@@ -1,0 +1,40 @@
+# -*- coding: utf-8 -*
+
+import asyncio
+import websockets
+import time
+import datetime
+
+command=""
+
+
+async def send_action(websocket):
+	print("开始发送动作")
+	global command
+	while command == "start":
+		time.sleep(1)
+		str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		await websocket.send(str)
+		
+
+# 接收客户端消息并处理，这里只是简单把客户端发来的返回回去
+async def recv_msg(websocket):
+    while True:
+        global command
+        command = await websocket.recv()
+        if command == "start":
+        	print("游戏开始了")
+        	await send_action(websocket)
+        elif command=="stop":
+        	print("游戏停止了")
+
+# 服务器端主逻辑
+# websocket和path是该函数被回调时自动传过来的，不需要自己传
+async def main_logic(websocket, path):
+		await recv_msg(websocket)
+
+# 把ip换成自己本地的ip
+start_server = websockets.serve(main_logic, '127.0.0.1', 5678)
+
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_forever()

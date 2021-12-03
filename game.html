@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+   <meta charset="utf-8">
+   <title>超级玛丽</title>
+       <script type="text/javascript">
+       	var ws;
+       	var textItem;
+         function WebSocketTest()
+         {
+            if ("WebSocket" in window)
+            {
+               // 打开一个 web socket
+               ws = new WebSocket("ws://127.0.0.1:5678");
+               
+               // 连接建立后的回调函数
+               ws.onopen = function()
+               {
+               		textItem=document.getElementById("time_text");
+               		textItem.innerText="未知";
+               };
+               
+               // 接收到服务器消息后的回调函数
+               ws.onmessage = function (evt) 
+               { 
+                  var received_msg = evt.data;
+                  console.log("收到服务端消息："+received_msg);
+                  textItem.innerText=received_msg;
+               };
+               
+               // 连接关闭后的回调函数
+               ws.onclose = function(event)
+               { 
+                  // 关闭 websocket
+                  var code = event.code;
+                  console.log(code)
+                  alert("websocket关闭");
+               };
+               
+               ws.onerror = function(e){
+　　							//如果出现连接、处理、接收、发送数据失败的时候触发onerror事件
+　　							console.log(e);
+							 };
+            }
+            else
+            {
+               // 浏览器不支持 WebSocket
+               alert("您的浏览器不支持 WebSocket!");
+            }
+         }
+         
+         function start(){
+         		console.log("告诉后端游戏开始了")
+         		// Web Socket 已连接上，使用 send() 方法发送数据
+            ws.send("start");
+         		
+         }
+         
+         function stop(){
+         		console.log("告诉后端游戏停止了")
+         		// Web Socket 已连接上，使用 send() 方法发送数据
+            ws.send("stop");
+         }
+      </script>
+   </head>
+
+   <body onload="WebSocketTest()">
+   		<h1 id="time_text"></h1>
+			<button type="button" onclick="start()">开始</button>
+			<button type="button" onclick="stop()">停止</button>
+			<label>
+   </body>
+</html>
